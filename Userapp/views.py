@@ -38,5 +38,11 @@ class FilterMoney(APIView):
         user_n = request.data.get("user_n")
         type_of_money = request.data.get("type_of_money")
         chiqim = AllMoney.objects.all().filter(user_n=user_n, type_of_money=type_of_money)
+        money = 0
+        for i in chiqim:
+            money += i.total_money
+
         serializer = AllMoneySerializer(chiqim, many=True)
-        return Response(serializer.data)
+        return Response({"Data": serializer.data,
+                         f"Barcha {type_of_money} lar": money
+                         })
