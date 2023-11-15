@@ -12,3 +12,7 @@ class AllMoneySerializer(ModelSerializer):
     class Meta:
         model = AllMoney
         fields = "__all__"
+class ChiqimSerializer(ModelSerializer):
+    class Meta:
+        model = AllMoney
+        fields = ("user_n","type_of_money",)
