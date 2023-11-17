@@ -46,3 +46,54 @@ class FilterMoney(APIView):
         return Response({"Data": serializer.data,
                          f"Barcha {type_of_money} lar": money
                          })
+
+
+class Top3User(APIView):
+    def get(self, request):
+        users_list = []
+        #################################
+        data_user = User.objects.all()
+        for i in data_user:
+            users_list.append(i.id)
+        print(users_list)
+        ##################################
+
+        dict_kirim = {
+
+        }
+        dict_chiqim = {
+
+        }
+
+        for k in users_list:
+            pul_odam = 0
+            pul = AllMoney.objects.all().filter(user_n_id=k, type_of_money="Kirim")
+
+            for d in pul:
+                pul_odam += d.total_money
+            dict_kirim[k] = pul_odam
+        print(dict_kirim)
+        ####################################################################################
+        for k in users_list:
+            pul_odam = 0
+            pul = AllMoney.objects.all().filter(user_n_id=k, type_of_money="Chiqim")
+
+            for d in pul:
+                pul_odam += d.total_money
+            dict_chiqim[k] = pul_odam
+        print(dict_chiqim)
+        asosiy_hisob_kitob = {}
+        kirimlar = list(dict_kirim.values())
+        chiqimlar = list(dict_chiqim.values())
+
+        for t in range(len(kirimlar)):
+            total_month = kirimlar[t] - chiqimlar[t]
+            asosiy_hisob_kitob[t + 1] = total_month
+
+        # for key,value in dict_kirim.items():
+        #     print(key,value)
+        #
+        # for key,value in dict_chiqim.items():
+        #     print(key,value)
+
+        return Response(asosiy_hisob_kitob)
