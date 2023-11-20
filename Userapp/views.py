@@ -37,7 +37,8 @@ class FilterMoney(APIView):
     def post(self, request):
         user_n = request.data.get("user_n")
         type_of_money = request.data.get("type_of_money")
-        chiqim = AllMoney.objects.all().filter(user_n=user_n, type_of_money=type_of_money)
+        chiqim = AllMoney.objects.all().filter(
+            user_n=user_n, type_of_money=type_of_money)
         money = 0
         for i in chiqim:
             money += i.total_money
@@ -72,7 +73,7 @@ class Top3User(APIView):
             for d in pul:
                 pul_odam += d.total_money
             dict_kirim[k] = pul_odam
-        print(dict_kirim)
+        print("kirim", dict_kirim)
         ####################################################################################
         for k in users_list:
             pul_odam = 0
@@ -81,7 +82,7 @@ class Top3User(APIView):
             for d in pul:
                 pul_odam += d.total_money
             dict_chiqim[k] = pul_odam
-        print(dict_chiqim)
+        print('chiqim ', dict_chiqim)
         asosiy_hisob_kitob = {}
         kirimlar = list(dict_kirim.values())
         chiqimlar = list(dict_chiqim.values())
@@ -90,10 +91,11 @@ class Top3User(APIView):
             total_month = kirimlar[t] - chiqimlar[t]
             asosiy_hisob_kitob[t + 1] = total_month
 
-        # for key,value in dict_kirim.items():
-        #     print(key,value)
-        #
-        # for key,value in dict_chiqim.items():
-        #     print(key,value)
+        print(asosiy_hisob_kitob)
 
-        return Response(asosiy_hisob_kitob)
+        sorted_asosiy_hisob_kitob = dict(
+            sorted(asosiy_hisob_kitob.items(), key=lambda item: item[1], reverse=True))
+
+        top3_users = dict(list(sorted_asosiy_hisob_kitob.items())[:3])
+
+        return Response(top3_users)
