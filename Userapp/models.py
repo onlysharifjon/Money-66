@@ -33,3 +33,11 @@ class AllMoney(models.Model):
     )
     category_money = models.CharField(max_length=30, choices=CHOISE2)
     comment = models.TextField(blank=True)
+class UserMoney(models.Model):
+    card_holder = models.ForeignKey(User, on_delete=models.CASCADE)
+    card_number = models.IntegerField(default=8600)
+    expired_date = models.DateField()
+    money = models.IntegerField()
+
+    def __str__(self):
+        return str(self.card_holder)
