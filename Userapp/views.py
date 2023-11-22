@@ -17,17 +17,35 @@ class UserRegisterView(APIView):
         return Response({"status": "User created"})
 
 
+from .models import UserMoney
+
+
 class AddMoneyView(APIView):
     serializer_class = AllMoneySerializer
     queryset = AllMoney.objects.all()
 
     def post(self, request):
-        serializer = AllMoneySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "status 200 ok"})
+        user_n = int(request.data.get("user_n"))
+        total_money = request.data.get('total_money')
+        pul = UserMoney.objects.all().filter(card_holder=user_n)
+
+        for i in pul:
+            user_puli = i.money
+
+        if user_puli >= int(total_money):
+            qolgan_pul = user_puli - int(total_money)
+            print(qolgan_pul)
+            serializer = AllMoneySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                print("Save")
+            try:
+                updater = UserMoney.objects.all().filter(card_holder=user_n).update(money=qolgan_pul)
+            except:
+                return Response("Sizning Kartangiz yo'q")
+            return Response({"MSG": "succses"})
         else:
-            return Response(serializer.errors)
+            return Response({"MSG": "Sizning Pulingiz yetmaydi"})
 
 
 class FilterMoney(APIView):
@@ -100,5 +118,4 @@ class Top3User(APIView):
 
         return Response(top3_users)
 
-# class UserMoney(APIView):
-    # def post(self, request):
+
