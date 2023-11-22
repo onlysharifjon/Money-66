@@ -99,3 +99,6 @@ class Top3User(APIView):
         top3_users = dict(list(sorted_asosiy_hisob_kitob.items())[:3])
 
         return Response(top3_users)
+
+# class UserMoney(APIView):
+    # def post(self, request):
